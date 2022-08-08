@@ -1,8 +1,31 @@
 <html>
-    <header>
-        <title>test auto</title>
-    </header>
-    <body>
-        <h1>tuyeetj vowi</h1>
-    </body>
+<header>
+    <title>Auto Data</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+</header>
+
+<body>
+    <h1>Auto data</h1>
+    <button type="button" class="btn btn-primary" id="readfile">Đọc file</button>
+    <script>
+        $(document).ready(function () {
+            //https://auto-data.herokuapp.com/
+            $("#readfile").click(function () {
+                $.ajax({
+                    url: "./read-file",
+                    method: "GET",
+
+                }).done(function (data) {
+                    console.log("data::", data);
+                });
+            })
+        })
+    </script>
+</body>
+
 </html>
