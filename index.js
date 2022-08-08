@@ -58,7 +58,7 @@ app.get("/read-file", async(req, res) => {
     console.log(arrData[1]);
     console.log(arrData[2]);
     console.log(arrData[3]);
-    res.json({code: 200, data: arrData});
+    res.json({code: 200, data: "arrData"});
     
     
 });
