@@ -16,7 +16,7 @@
         $(document).ready(function () {
             var callApi = function() {
                 $.ajax({
-                    url: "https://auto-data.herokuapp.com/read-file",
+                    url: "./read-file",
                     method: "POST"
                 }).done(function (data) {
                     callApi();
