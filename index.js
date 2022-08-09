@@ -54,83 +54,24 @@ var getDataExcel = async function() {
 }
 getDataExcel();
 
-var saveDataRun = async function () {
-    const dataCount = await Count.findOne();
-    let number = 0;
-    if (dataCount) {
-        number = dataCount.countdata;
-    }
-    console.log(3);
-    if (arrData && arrData[number] && arrData[number][1] && arrData[number][1] != "Mã Khách Hàng") {
-        const newUser = new User({
-            phone: arrData[number][3],
-            name: arrData[number][2],
-            phanthuong: arrData[number][5],
-            ma_kh: arrData[number][1],
-            mid: arrData[number][3],
-            khuvuc: arrData[number][4],
-            province: arrData[number][4],
-            voucher: arrData[number][6],
-            userCustom: "true"
-        });
-        await newUser.save();
-        number++;
-        if (dataCount) {
-            await Count.findByIdAndUpdate(dataCount._id, { countdata: number });
-        } else {
-            const newCount = new Count({
-                countdata: number
-            });
-            await newCount.save();
-        }
-        console.log(4);
-    } else {
-        number++;
-        if (dataCount) {
-            await Count.findByIdAndUpdate(dataCount._id, { countdata: number });
-        } else {
-            const newCount = new Count({
-                countdata: number
-            });
-            await newCount.save();
-        }
-        console.log(5);
-    }
-    if (number < arrData.length) {
-        saveDataRun();
-    }
-}
-
-
 
 app.get("/", (req, res) => {
-    saveDataRun();
+    
     res.render("trangchu");
 });
-app.get("/read-file", async (req, res) => {
+app.post("/read-file", async (req, res) => {
     //[Voucher 5%, Card, Voucher 10%]
 
 
     //res.json({code: 200, data: "arrData"});
 
     //
-
+    
     const dataCount = await Count.findOne();
     let number = 0;
     if (dataCount) {
         number = dataCount.countdata;
     }
-    let readXlsxFile = require('read-excel-file/node');
-    let totalRowsCard = await readXlsxFile('public/DATA_UP_220808.xlsx', { sheet: "Card" }).then((rows) => {
-        return rows;
-    });
-    let totalRowsVoucher5 = await readXlsxFile('public/DATA_UP_220808.xlsx', { sheet: "Voucher 5%" }).then((rows) => {
-        return rows;
-    });
-    let totalRowsVoucher10 = await readXlsxFile('public/DATA_UP_220808.xlsx', { sheet: "Voucher 10%" }).then((rows) => {
-        return rows;
-    });
-    let arrData = totalRowsCard.concat(totalRowsVoucher5, totalRowsVoucher10);
     if (arrData && arrData[number] && arrData[number][1] && arrData[number][1] != "Mã Khách Hàng") {
         const newUser = new User({
             phone: arrData[number][3],
@@ -153,6 +94,12 @@ app.get("/read-file", async (req, res) => {
             });
             await newCount.save();
         }
+        
+        if (number < arrData.length) {
+            res.json({ code: 200, user: newUser });
+        } else {
+            res.json({ code: 200, user: newUser, done: "true" });
+        }
     } else {
         number++;
         if (dataCount) {
@@ -163,9 +110,15 @@ app.get("/read-file", async (req, res) => {
             });
             await newCount.save();
         }
+        if (number < arrData.length) {
+            res.json({ code: 200, user: {} });
+        } else {
+            res.json({ code: 200, user: {}, done: "true" });
+        }
+        
     }
     // call lại hàm
-    res.json({ data: "xong" });
+    
 });
 
 

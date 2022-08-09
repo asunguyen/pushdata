@@ -11,7 +11,7 @@
 
 <body>
     <h1>Auto data</h1>
-    <button type="button" class="btn btn-primary" id="readfile">Đọc file</button>
+    <button type="button" class="btn btn-primary" id="readfile">Push data</button>
     <script>
         $(document).ready(function () {
             var callApi = function() {
@@ -19,7 +19,38 @@
                     url: "./read-file",
                     method: "POST"
                 }).done(function (data) {
-                    callApi();
+                    if (data && data.user && data.user.phone) {
+                        pushData(data);
+                    } else {
+                        callApi();
+                    }
+                    
+                });
+            }
+
+            var pushData = function(datain) {
+                $.ajax({
+                    url: "https://app.vietguys.biz/api/topup/v1/topupBeyond",
+                    headers: {
+                        Authorization: 'Bearer 73201672-1658-4353-b0ba-72763daeeab0'
+                    },
+                    method: "POST",
+                    data: {
+                        phone: datain.user.phone,
+                        name: datain.user.name,
+                        phanthuong: datain.user.phanthuong,
+                        ma_kh: datain.user.ma_kh,
+                        mid: datain.user.mid,
+                        khuvuc: datain.user.khuvuc,
+                        province: datain.user.province,
+                        voucher: datain.user.voucher,
+                        userCustom: "true"
+                    }
+                }).done(function (dataout) {
+                    if (!datain.done) {
+                        callApi();
+                    }
+                    
                 });
             }
             //https://auto-data.herokuapp.com/
