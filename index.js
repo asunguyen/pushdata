@@ -41,13 +41,6 @@ app.get("/", (req, res) => {
     res.render("trangchu");
 });
 
-let getData = function(data, index) {
-    if (data && data[index] && data[index][1]) {
-        return
-    }
-    console.log(data[index][1]);
-}
-
 app.get("/read-file", async(req, res) => {
     //[Voucher 5%, Card, Voucher 10%]
 
@@ -58,7 +51,6 @@ app.get("/read-file", async(req, res) => {
 
     const dataCount = await Count.findOne();
     let number = 0;
-    console.log(dataCount);
     if (dataCount) {
         number = dataCount.countdata;
     }
@@ -73,7 +65,6 @@ app.get("/read-file", async(req, res) => {
         return rows;
     });
     let arrData = totalRowsCard.concat(totalRowsVoucher5, totalRowsVoucher10);
-    getData(arrData, number)
     if (arrData && arrData[number] && arrData[number][1] && arrData[number][1] != "Mã Khách Hàng") {
         const newUser = new User({
             phone: arrData[number][3],
@@ -106,11 +97,9 @@ app.get("/read-file", async(req, res) => {
             });
             await newCount.save();
         }
-        
-        // call lại hàm
     }
-    
-
+    // call lại hàm
+    res.json({data: "xong"});
 });
 
 
