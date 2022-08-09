@@ -14,15 +14,17 @@
     <button type="button" class="btn btn-primary" id="readfile">Đọc file</button>
     <script>
         $(document).ready(function () {
+            var callApi = function() {
+                $.ajax({
+                    url: "https://auto-data.herokuapp.com/read-file",
+                    method: "POST"
+                }).done(function (data) {
+                    callApi();
+                });
+            }
             //https://auto-data.herokuapp.com/
             $("#readfile").click(function () {
-                $.ajax({
-                    url: "./read-file",
-                    method: "GET",
-
-                }).done(function (data) {
-                    console.log("data::", data);
-                });
+                callApi();
             })
         })
     </script>
