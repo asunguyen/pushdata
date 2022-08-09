@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const mongose = require('mongoose');
 
+const User = require("./models/users");
+const Count = require("./models/count");
 
 const connectDB = async () => {
     try {
@@ -39,10 +41,27 @@ app.get("/", (req, res) => {
     res.render("trangchu");
 });
 
+let getData = function(data, index) {
+    if (data && data[index] && data[index][1]) {
+        return
+    }
+    console.log(data[index][1]);
+}
 
 app.get("/read-file", async(req, res) => {
     //[Voucher 5%, Card, Voucher 10%]
 
+    
+    //res.json({code: 200, data: "arrData"});
+    
+    //
+
+    const dataCount = await Count.findOne();
+    let number = 0;
+    console.log(dataCount);
+    if (dataCount) {
+        number = dataCount.countdata;
+    }
     let readXlsxFile = require('read-excel-file/node');
     let totalRowsCard = await readXlsxFile('public/DATA_UP_220808.xlsx', {sheet: "Card"}).then((rows) => {
         return rows;
@@ -54,13 +73,44 @@ app.get("/read-file", async(req, res) => {
         return rows;
     });
     let arrData = totalRowsCard.concat(totalRowsVoucher5, totalRowsVoucher10);
-    console.log(arrData[0]);
-    console.log(arrData[1]);
-    console.log(arrData[2]);
-    console.log(arrData[3]);
-    res.json({code: 200, data: "arrData"});
+    getData(arrData, number)
+    if (arrData && arrData[number] && arrData[number][1] && arrData[number][1] != "Mã Khách Hàng") {
+        const newUser = new User({
+            phone: arrData[number][3],
+            name: arrData[number][2],
+            phanthuong: arrData[number][5],
+            ma_kh: arrData[number][1],
+            mid: arrData[number][3],
+            khuvuc: arrData[number][4],
+            province: arrData[number][4],
+            voucher: arrData[number][6],
+            userCustom: "true"
+        });
+        await newUser.save();
+        number++;
+        if (dataCount) {
+            await Count.findByIdAndUpdate(dataCount._id, {countdata: number});
+        } else{
+            const newCount = new Count({
+                countdata: number
+            });
+            await newCount.save();
+        }
+    } else {
+        number++;
+        if (dataCount) {
+            await Count.findByIdAndUpdate(dataCount._id, {countdata: number});
+        } else{
+            const newCount = new Count({
+                countdata: number
+            });
+            await newCount.save();
+        }
+        
+        // call lại hàm
+    }
     
-    
+
 });
 
 
