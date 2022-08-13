@@ -43,13 +43,13 @@ let totalRowsVoucher5;
 let totalRowsVoucher10;
 var getDataExcel = async function () {
     console.log(1);
-    totalRowsCard = await readXlsxFile('public/DATA_UP_220808.xlsx', { sheet: "Card" }).then((rows) => {
+    totalRowsCard = await readXlsxFile('public/DATA_UP_220808_card.xlsx').then((rows) => {
         return rows;
     });
-    totalRowsVoucher5 = await readXlsxFile('public/DATA_UP_220808.xlsx', { sheet: "Voucher 5%" }).then((rows) => {
+    totalRowsVoucher5 = await readXlsxFile('public/DATA_UP_220808_5.xlsx').then((rows) => {
         return rows;
     });
-    totalRowsVoucher10 = await readXlsxFile('public/DATA_UP_220808.xlsx', { sheet: "Voucher 10%" }).then((rows) => {
+    totalRowsVoucher10 = await readXlsxFile('public/DATA_UP_220808_10.xlsx').then((rows) => {
         return rows;
     });
     arrData = totalRowsCard.concat(totalRowsVoucher5, totalRowsVoucher10);
